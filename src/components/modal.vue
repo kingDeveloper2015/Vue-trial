@@ -60,14 +60,11 @@
         }
       },
       flag: function (data) {
-        console.log(data)
         this.updateFlag = data
       }
     },
     methods: {
       onAction: function () {
-        console.log(this.flag)
-        console.log(this.data)
         if (this.flag === false) {
           this.$emit('add', {
             userId: this.userId,
