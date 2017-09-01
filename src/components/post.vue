@@ -3,7 +3,7 @@
     <div class="col-md-12">
       <button class="pull-left btn btn-primary" v-on:click="onAdd">Add</button>
     </div>
-    <modal v-show="showModal" @add="doAdd" @update="doUpdate" v-bind:flag="updateFlag" v-bind:data="original[selIdx]" @close="onClose"></modal>
+    <modal v-show="showModal" @add="doAdd" @update="doUpdate" v-bind:data="original[selIdx]"></modal>
     <div class="col-md-12">
       <table>
         <thead>
@@ -56,8 +56,6 @@
         posts: [],
         original: [],
         userList: [],
-        showModal: false,
-        updateFlag: false,
         selIdx: -1,
         sort: {
           id: 'asc',
@@ -72,6 +70,11 @@
           userId: [],
           dateRange: []
         }
+      }
+    },
+    computed: {
+      showModal () {
+        return this.$store.getters.getModalState
       }
     },
     watch: {
@@ -133,13 +136,11 @@
       },
       onAdd: function () {
         this.selIdx = -1
-        this.updateFlag = false
-        this.showModal = true
+        this.$store.commit('newPost')
       },
       onUpdate: function (index) {
         this.selIdx = index
-        this.updateFlag = true
-        this.showModal = true
+        this.$store.commit('updatePost')
       },
       onRemove: function (index) {
         var $this = this
@@ -150,9 +151,6 @@
           $this.showModal = false
         })
       },
-      onClose: function () {
-        this.showModal = false
-      },
       doAdd: function (data) {
         var $this = this
         axios.post(`http://jsonplaceholder.typicode.com/posts`, {
@@ -160,7 +158,7 @@
           body: data.body,
           userId: data.userId
         }).then(response => {
-          $this.showModal = false
+          $this.$store.commit('closeDialog')
           $this.original.push({
             id: response.data.id,
             title: response.data.title,
@@ -178,7 +176,7 @@
           userId: data.userId,
           body: data.body
         }).then(res => {
-          $this.showModal = false
+          $this.$store.commit('closeDialog')
           $this.original[$this.selIdx].userId = res.data.userId
           $this.original[$this.selIdx].body = res.data.body
           $this.original[$this.selIdx].title = res.data.title
@@ -186,7 +184,6 @@
       }
     },
     created () {
-      console.log(this.$store.state)
       var $this = this
       axios.get(`http://jsonplaceholder.typicode.com/posts`)
       .then(response => {

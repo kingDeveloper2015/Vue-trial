@@ -43,7 +43,7 @@
         updateFlag: false
       }
     },
-    props: ['flag', 'data'],
+    props: ['data'],
     watch: {
       data: function (data) {
         console.log(this.updateFlag)
@@ -58,9 +58,11 @@
           this.title = data.title
           this.body = data.body
         }
-      },
-      flag: function (data) {
-        this.updateFlag = data
+      }
+    },
+    computed: {
+      flag () {
+        return this.$store.getters.getUpdateState
       }
     },
     methods: {
@@ -80,7 +82,7 @@
         }
       },
       onCancel: function () {
-        this.$emit('close')
+        this.$store.commit('closeDialog')
       }
     }
   }
