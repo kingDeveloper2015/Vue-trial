@@ -186,6 +186,7 @@
       }
     },
     created () {
+      console.log(this.$store.state)
       var $this = this
       axios.get(`http://jsonplaceholder.typicode.com/posts`)
       .then(response => {
